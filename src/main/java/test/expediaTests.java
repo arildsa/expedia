@@ -8,7 +8,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -56,8 +58,26 @@ public class expediaTests {
     }
 
     @Test
-    void test2(){
+    void searchForFlights(){
+        myFindElementById("tab-flight-tab").click();
+        driver.findElement(By.xpath(".//label[@id='flight-origin-label']//span[@class='visuallyhidden']")).click();
+        myFindElementById("flight-origin").sendKeys("DEN");
+        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+        myAiportPicker(".//*[@class='results-item']//div[contains(@class,'suggestion')]//b").get(0).click();
+        driver.findElement(By.xpath(".//label[@id='flight-destination-label']//span[@class='visuallyhidden']")).click();
+        myFindElementById("flight-destination").sendKeys("HONO");
+        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+        myAiportPicker(".//*[@class='results-item']//div[contains(@class,'suggestion')]//b").get(0).click();
+        myFindElementById("flight-departing").click();
+        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
+        myDatePicker(".//*[@id='flight-departing-wrapper']//button[contains(@class,'datepicker-cal-date')][not(contains(@class,'disabled'))]").get(3).click();
+        driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+        myFindElementById("search-button").click();
 
+        //Assert
+        Assert.assertEquals("The search result does not match the search",
+                            "Select your departure to Honolulu",
+                             driver.findElement(By.xpath(".//header[@id='titleBar']//span[@class='title-city-text']")).getText());
     }
 
     @Test
@@ -74,5 +94,35 @@ public class expediaTests {
     void test5(){
 
     }
+
+
+    public WebElement myFindElementById(String id){
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebElement element = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id(id)));
+
+        return element;
+    }
+
+    public List<WebElement> myDatePicker(String xpath){
+        List<WebElement> elements;
+       elements = driver.findElements(By.xpath(xpath));
+
+       return elements;
+    }
+
+    public List<WebElement> myAiportPicker(String xpath){
+        List<WebElement> elements;
+        elements = driver.findElements(By.xpath(xpath));
+
+        return elements;
+    }
+//
+//    public void mySendKeys(String elementId, String keys){
+//       WebElement element = myFindElementById(elementId);
+//       driver.switchTo().activeElement()
+//
+//
+//    }
 
 }
