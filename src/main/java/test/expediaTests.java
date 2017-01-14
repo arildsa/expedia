@@ -33,7 +33,7 @@ public class expediaTests {
 
     @AfterEach
     void tearDown(){
-//        driver.quit();
+        driver.quit();
     }
 
 
