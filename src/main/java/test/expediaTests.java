@@ -81,7 +81,15 @@ public class expediaTests {
     }
 
     @Test
-    void test3(){
+    void searchForDisneyVacationsVerifyResult(){
+        myFindElementById("tab-opensearch-tab").click();
+        myFindElementById("#opensearch-searchQuery").sendKeys("Disney Vacations");
+        myFindElementById("#search-button").click();
+        List<WebElement> searchResults = driver.findElements(By.xpath(".//a[@class='flex-link']"));
+        for(int i = 0; i < searchResults.size(); i++){
+            String text = searchResults.get(i).getText();
+            Assert.assertTrue("the search result does not contain Disney",text.contains("Disney"));
+        }
 
     }
 
