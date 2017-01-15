@@ -82,9 +82,11 @@ public class expediaTests {
 
     @Test
     void searchForDisneyVacationsVerifyResult(){
-        myFindElementById("tab-opensearch-tab").click();
-        myFindElementById("#opensearch-searchQuery").sendKeys("Disney Vacations");
-        myFindElementById("#search-button").click();
+        driver.findElement(By.xpath(".//*[@data-lobtab='opensearch']")).click();
+        driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+        driver.findElement(By.xpath(".//input[@id='opensearch-searchQuery']")).sendKeys("Disney Vacations");
+        driver.manage().timeouts().implicitlyWait(5,TimeUnit.SECONDS);
+        myFindElementById("search-button").click();
         List<WebElement> searchResults = driver.findElements(By.xpath(".//a[@class='flex-link']"));
         for(int i = 0; i < searchResults.size(); i++){
             String text = searchResults.get(i).getText();
