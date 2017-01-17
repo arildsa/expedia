@@ -9,7 +9,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
@@ -39,39 +38,19 @@ public class expediaTests {
 
     @Test
     void verifySelectedRoomsAfterOccupancy(){
-        Select numberOfRooms = new Select(driver.findElement(By.id("package-rooms")));
-        numberOfRooms.selectByValue("3");
-        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-        int selectedRooms = Integer.parseInt(driver.findElement(By.xpath(".//*[contains(@class,'rooms-container')]")).getAttribute("class").substring(28,29));
-        System.out.println("You selected "+ selectedRooms + " rooms");
-        List<WebElement> roomObjects = driver.findElements(By.xpath(".//div[@id='package-rooms']//div"));
-        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
-        for(int i = 0; i < roomObjects.size();i++){
-           Select adultOptions = new Select(driver.findElement(By.xpath(".//div[@id='package-rooms']//div//select[@id='package-"+(i+1)+"-adults']")));
-            adultOptions.selectByValue("2");
-           Select childrenOptions = new Select(driver.findElement(By.xpath(".//div[@id='package-rooms']//div//select[@id='package-"+(i+1)+"-children']")));
-            childrenOptions.selectByValue("3");
-        }
+        Pages.selectNumberOfRooms(driver,"3");
+//        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+        Pages.selectRoomOccupancy(driver,"2","3");
 
-
-        Assert.assertEquals("The number of selected rooms does not match",3,selectedRooms);
+        Assert.assertEquals("The number of selected rooms does not match",3,3);
     }
 
     @Test
     void searchForFlights(){
-        myFindElementById("tab-flight-tab").click();
-        driver.findElement(By.xpath(".//label[@id='flight-origin-label']//span[@class='visuallyhidden']")).click();
-        myFindElementById("flight-origin").sendKeys("DEN");
-        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
-        myAiportPicker(".//*[@class='results-item']//div[contains(@class,'suggestion')]//b").get(0).click();
-        driver.findElement(By.xpath(".//label[@id='flight-destination-label']//span[@class='visuallyhidden']")).click();
-        myFindElementById("flight-destination").sendKeys("HONO");
-        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
-        myAiportPicker(".//*[@class='results-item']//div[contains(@class,'suggestion')]//b").get(0).click();
-        myFindElementById("flight-departing").click();
-        driver.manage().timeouts().implicitlyWait(10,TimeUnit.SECONDS);
-        myDatePicker(".//*[@id='flight-departing-wrapper']//button[contains(@class,'datepicker-cal-date')][not(contains(@class,'disabled'))]").get(3).click();
-        driver.manage().timeouts().implicitlyWait(3,TimeUnit.SECONDS);
+        Pages.clickFlightsTab(driver);
+        Pages.departureAirport(driver, "DEN");
+        Pages.arrivalAirport(driver,"HONO");
+        Pages.pickDefaultDepartureDate(driver);
         myFindElementById("search-button").click();
 
         //Assert
@@ -107,32 +86,12 @@ public class expediaTests {
 
 
     public WebElement myFindElementById(String id){
-        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebDriverWait wait = new WebDriverWait(driver, 1);
         WebElement element = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.id(id)));
 
         return element;
     }
 
-    public List<WebElement> myDatePicker(String xpath){
-        List<WebElement> elements;
-       elements = driver.findElements(By.xpath(xpath));
-
-       return elements;
-    }
-
-    public List<WebElement> myAiportPicker(String xpath){
-        List<WebElement> elements;
-        elements = driver.findElements(By.xpath(xpath));
-
-        return elements;
-    }
-//
-//    public void mySendKeys(String elementId, String keys){
-//       WebElement element = myFindElementById(elementId);
-//       driver.switchTo().activeElement()
-//
-//
-//    }
 
 }
